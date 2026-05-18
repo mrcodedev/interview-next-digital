@@ -35,3 +35,66 @@ jobs:
 
       - name: Build
         run: npm run build
+  docker:
+    name: Docker build · Smoke test
+    runs-on: ubuntu-latest
+    needs: ci
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t social-app:${{ github.sha }} .
+
+      - name: Run container
+        run: |
+          docker run -d \
+            --name social-app-test \
+            -p 8080:80 \
+            social-app:${{ github.sha }}
+
+      - name: Wait for container to be ready
+        run: sleep 5
+
+      - name: Smoke test — verify that it responds
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080)
+          echo "HTTP status: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "❌ The container does not respond with 200"
+            exit 1
+          fi
+          echo "✅ The container responds correctly"
+
+      - name: Verify that HTML is returned
+        run: |
+          BODY=$(curl -s http://localhost:8080)
+          if echo "$BODY" | grep -q "<div id=\"root\">"; then
+            echo "✅ The HTML is correct"
+          else
+            echo "❌ The HTML does not contain the expected root div"
+            exit 1
+          fi
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker stop social-app-test || true
+          docker rm social-app-test || true
+
+      - name: Log in to GitHub Container Registry
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push image to GHCR
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          docker tag social-app:${{ github.sha }} ghcr.io/${{ github.repository }}:latest
+          docker tag social-app:${{ github.sha }} ghcr.io/${{ github.repository }}:${{ github.sha }}
+          docker push ghcr.io/${{ github.repository }}:latest
+          docker push ghcr.io/${{ github.repository }}:${{ github.sha }}
