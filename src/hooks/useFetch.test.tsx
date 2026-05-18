@@ -4,19 +4,19 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useFetch } from "./useFetch";
 
 describe("useFetch", () => {
-  const originalFetch = global.fetch;
+  const originalFetch = globalThis.fetch;
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   afterEach(() => {
-    global.fetch = originalFetch;
+    globalThis.fetch = originalFetch;
   });
 
   it("returns idle state when URL is null", () => {
     const fetchMock = vi.fn();
-    global.fetch = fetchMock as unknown as typeof fetch;
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
 
     const { result } = renderHook(() => useFetch<{ id: number }>(null));
 
@@ -36,7 +36,7 @@ describe("useFetch", () => {
       json: async () => payload,
     } as Response);
 
-    global.fetch = fetchMock as unknown as typeof fetch;
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
 
     const { result } = renderHook(() => useFetch<typeof payload>("https://example.test/users/1"));
 
@@ -60,7 +60,7 @@ describe("useFetch", () => {
       json: async () => ({}),
     } as Response);
 
-    global.fetch = fetchMock as unknown as typeof fetch;
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
 
     const { result } = renderHook(() => useFetch("https://example.test/missing"));
 

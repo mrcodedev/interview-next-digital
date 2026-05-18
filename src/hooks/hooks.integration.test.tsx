@@ -16,7 +16,7 @@ const buildAlbum = (id: number): Album => ({
 });
 
 describe("hooks integration", () => {
-  const originalFetch = global.fetch;
+  const originalFetch = globalThis.fetch;
 
   beforeEach(() => {
     localStorage.clear();
@@ -24,7 +24,7 @@ describe("hooks integration", () => {
   });
 
   afterEach(() => {
-    global.fetch = originalFetch;
+    globalThis.fetch = originalFetch;
   });
 
   it("integrates RecentAlbumsProvider with useRecentAlbumsContext", () => {
@@ -62,11 +62,13 @@ describe("hooks integration", () => {
       json: async () => payload,
     } as Response);
 
-    global.fetch = fetchMock as unknown as typeof fetch;
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    const initialProps: { url: string | null } = { url: null };
 
     const { result, rerender } = renderHook(
       ({ url }: { url: string | null }) => useFetch<typeof payload>(url),
-      { initialProps: { url: null } }
+      { initialProps }
     );
 
     expect(result.current.status).toBe("idle");
