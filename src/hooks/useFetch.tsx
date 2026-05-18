@@ -9,7 +9,7 @@ interface UseFetchResult<T> {
   status: Status;
 }
 
-export const useFetch = <T>(url: string | null): UseFetchResult<T> => {
+export const useFetch = <T,>(url: string | null): UseFetchResult<T> => {
   const [data, setData] = useState<T | null>(null);
   const [status, setStatus] = useState<Status>(url ? "loading" : "idle");
   const [error, setError] = useState<string | null>(null);
