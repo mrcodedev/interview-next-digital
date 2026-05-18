@@ -3,6 +3,6 @@ import { RecentAlbumsContext } from "../context/RecentAlbumsContextObject";
 
 export const useRecentAlbumsContext = () => {
   const ctx = useContext(RecentAlbumsContext);
-  if (!ctx) throw new Error("useRecentAlbumsContext debe usarse dentro de RecentAlbumsProvider");
+  if (!ctx) throw new Error("useRecentAlbumsContext should be used within RecentAlbumsProvider");
   return ctx;
 };
