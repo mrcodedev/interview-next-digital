@@ -5,7 +5,7 @@ interface Props {
   user: User;
 }
 
-export function UserCard({ user }: Props) {
+export const UserCard = ({ user }: Props) => {
   const initials = user.name
     .split(" ")
     .map((word) => word[0])
@@ -47,4 +47,4 @@ export function UserCard({ user }: Props) {
       </div>
     </Link>
   );
-}
+};
