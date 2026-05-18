@@ -1,0 +1,20 @@
+{
+  "name": "interview-next-digital",
+  "version": "1.0.0",
+  "description": "Brief interview exercise for next digital",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrcodedev/interview-next-digital.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mrcodedev/interview-next-digital/issues"
+  },
+  "homepage": "https://github.com/mrcodedev/interview-next-digital#readme"
+}
