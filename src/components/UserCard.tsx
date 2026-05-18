@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import type { User } from "../types";
 
-interface Props {
+interface UserCardProps {
   user: User;
 }
 
-export const UserCard = ({ user }: Props) => {
+export const UserCard = ({ user }: UserCardProps) => {
   const initials = user.name
     .split(" ")
     .map((word) => word[0])

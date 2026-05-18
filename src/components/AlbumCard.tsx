@@ -3,12 +3,12 @@ import { useFetch } from "../hooks/useFetch";
 import { Spinner } from "./Spinner";
 import type { Album, Photo } from "../types";
 
-interface Props {
+interface AlbumCardProps {
   album: Album;
   onVisit: () => void;
 }
 
-export const AlbumCard = ({ album, onVisit }: Props) => {
+export const AlbumCard = ({ album, onVisit }: AlbumCardProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const { data: photos, loading } = useFetch<Photo[]>(
