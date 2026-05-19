@@ -1,18 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+
+# Local env files — never commit secrets
+.env.local
+.env.*.local
+.env.production
+.env.staging
+
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Runtime / misc
 *.local
+*.tgz
+*.tsbuildinfo
 
-# Test coverage and reports (auto-generated, use npm run test:coverage:open)
+# Test coverage and reports (auto-generated — use npm run test:coverage:open)
 coverage/
 *.lcov
 coverage_*.txt
@@ -22,11 +34,30 @@ test_output.txt
 test-report-*.txt
 coverage.json
 
-# Editor directories and files
+# Playwright E2E artifacts
+playwright-report/
+blob-report/
+test-results/
+.playwright/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# Editors
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
