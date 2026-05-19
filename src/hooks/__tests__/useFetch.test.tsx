@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { useFetch } from "./useFetch";
+import { useFetch } from "../useFetch";
 
 describe("useFetch", () => {
   const originalFetch = globalThis.fetch;

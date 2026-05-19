@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 import { renderHook, act } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
-import { useRecentAlbums } from "./useRecentAlbums";
-import type { Album } from "../types";
+import { useRecentAlbums } from "../useRecentAlbums";
+import type { Album } from "../../types";
 
 const STORAGE_KEY = "recent_albums";
 
@@ -15,6 +15,19 @@ const buildAlbum = (id: number): Album => ({
 describe("useRecentAlbums", () => {
   beforeEach(() => {
     localStorage.clear();
+  });
+
+  it("returns empty array when localStorage.getItem throws error", () => {
+    const originalGetItem = localStorage.getItem;
+    localStorage.getItem = () => {
+      throw new Error("Storage error");
+    };
+
+    const { result } = renderHook(() => useRecentAlbums());
+
+    expect(result.current.recentAlbums).toEqual([]);
+
+    localStorage.getItem = originalGetItem;
   });
 
   it("loads initial albums from localStorage", () => {

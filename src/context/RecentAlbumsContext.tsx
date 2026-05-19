@@ -4,9 +4,5 @@ import { RecentAlbumsContext } from "./RecentAlbumsContextObject";
 
 export const RecentAlbumsProvider = ({ children }: { children: ReactNode }) => {
   const value = useRecentAlbums();
-  return (
-    <RecentAlbumsContext.Provider value={value}>
-      {children}
-    </RecentAlbumsContext.Provider>
-  );
+  return <RecentAlbumsContext.Provider value={value}>{children}</RecentAlbumsContext.Provider>;
 };

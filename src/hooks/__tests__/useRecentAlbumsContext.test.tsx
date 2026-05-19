@@ -2,11 +2,11 @@
 import type { ReactNode } from "react";
 import { renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { useRecentAlbumsContext } from "./useRecentAlbumsContext";
+import { useRecentAlbumsContext } from "../useRecentAlbumsContext";
 import {
   RecentAlbumsContext,
   type RecentAlbumsContextType,
-} from "../context/RecentAlbumsContextObject";
+} from "../../context/RecentAlbumsContextObject";
 
 describe("useRecentAlbumsContext", () => {
   it("throws when used outside provider", () => {

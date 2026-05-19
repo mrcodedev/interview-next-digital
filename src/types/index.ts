@@ -1,50 +1,8 @@
-export interface Geo {
-  lat: string;
-  lng: string;
-}
+export type { Address, Company, Geo } from "./common";
+export type { User } from "./user";
+export type { Album } from "./album";
+export type { Photo } from "./photo";
+export type { Todo } from "./todo";
 
-export interface Address {
-  street: string;
-  suite: string;
-  city: string;
-  zipcode: string;
-  geo: Geo;
-}
-
-export interface Company {
-  name: string;
-  catchPhrase: string;
-  bs: string;
-}
-
-export interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-  address: Address;
-  phone: string;
-  website: string;
-  company: Company;
-}
-
-export interface Album {
-  userId: number;
-  id: number;
-  title: string;
-}
-
-export interface Photo {
-  albumId: number;
-  id: number;
-  title: string;
-  url: string;
-  thumbnailUrl: string;
-}
-
-export interface ToDo {
-  userId: number;
-  id: number;
-  title: string;
-  completed: boolean;
-}
+// Compatibility alias for older naming.
+export type { Todo as ToDo } from "./todo";

@@ -1,14 +1,23 @@
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import {
+  ArrowLeftIcon,
+  EnvelopeIcon,
+  MapPinIcon,
+  GlobeAltIcon,
+  BuildingOfficeIcon,
+} from "@heroicons/react/24/outline";
 import { useFetch } from "../hooks/useFetch";
-import { AlbumList } from "../components/AlbumList";
-import { TodoList } from "../components/TodoList.tsx";
-import { Spinner } from "../components/Spinner";
-import { ErrorMessage } from "../components/ErrorMessage";
+import { AlbumList, TodoList, Spinner, ErrorMessage } from "../components";
 import type { User } from "../types";
+import { UserInfoChip, UserInitialsAvatar, UserTabs } from "../components";
+
+type Tab = "albums" | "todos";
 
 export const UserDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<Tab>("albums");
 
   const {
     data: user,
@@ -20,56 +29,58 @@ export const UserDetailPage = () => {
   if (error) return <ErrorMessage message={error} />;
   if (!user) return null;
 
+  const tabs: { key: Tab; label: string }[] = [
+    { key: "albums", label: "Albums" },
+    { key: "todos", label: "ToDos" },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-2xl mx-auto px-4 py-10">
+        {/* Back button */}
         <button
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 text-sm text-gray-500 hover:text-indigo-600 transition-colors mb-6"
         >
-          Volver
+          <ArrowLeftIcon className="w-4 h-4" />
+          Back
         </button>
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-6">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
-              <span className="text-indigo-700 font-bold text-lg">
-                {user.name
-                  .split(" ")
-                  .map((word) => word[0])
-                  .join("")
-                  .slice(0, 2)
-                  .toUpperCase()}
-              </span>
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">{user.name}</h1>
-              <p className="text-gray-500">@{user.username}</p>
-            </div>
-          </div>
 
-          <div className="grid grid-cols-1 gap-3 text-sm">
-            <InfoRow label="Email" value={user.email} />
-            <InfoRow label="Ciudad" value={user.address.city} />
-            <InfoRow label="Website" value={user.website} />
-            <InfoRow label="Empresa" value={user.company.name} />
+        {/* Profile card */}
+        <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden mb-6">
+          <div className="h-24 bg-gradient-to-r from-indigo-500 to-purple-600" />
+
+          <div className="px-6 pb-6">
+            <div className="flex items-end justify-between -mt-10 mb-4">
+              <UserInitialsAvatar
+                name={user.name}
+                containerClassName="w-20 h-20 rounded-2xl bg-white border-4 border-white shadow-md flex items-center justify-center"
+                textClassName="text-indigo-700 font-bold text-xl"
+              />
+            </div>
+
+            <h1 className="text-xl font-bold text-gray-900">{user.name}</h1>
+            <p className="text-gray-500 text-sm mb-5">@{user.username}</p>
+
+            <div className="grid grid-cols-2 gap-3">
+              <UserInfoChip icon={EnvelopeIcon} label="Email" value={user.email} />
+              <UserInfoChip icon={MapPinIcon} label="City" value={user.address.city} />
+              <UserInfoChip icon={GlobeAltIcon} label="Website" value={user.website} />
+              <UserInfoChip icon={BuildingOfficeIcon} label="Company" value={user.company.name} />
+            </div>
           </div>
         </div>
-        <div className="mb-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-3">Álbumes</h2>
-          <AlbumList userId={user.id} />
-        </div>
-        <div>
-          <h2 className="text-xl font-bold text-gray-900 mb-3">TODOs</h2>
-          <TodoList userId={user.id} />
+
+        {/* Tabs */}
+        <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+          <UserTabs tabs={tabs} activeTab={activeTab} onSelectTab={setActiveTab} />
+
+          <div className="p-4">
+            {activeTab === "albums" && <AlbumList userId={user.id} />}
+            {activeTab === "todos" && <TodoList userId={user.id} />}
+          </div>
         </div>
       </div>
     </div>
   );
 };
-
-const InfoRow = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
-    <span className="text-gray-500 font-medium">{label}</span>
-    <span className="text-gray-900">{value}</span>
-  </div>
-);

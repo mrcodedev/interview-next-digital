@@ -2,10 +2,10 @@
 import type { ReactNode } from "react";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { RecentAlbumsProvider } from "../context/RecentAlbumsContext";
-import { useFetch } from "./useFetch";
-import { useRecentAlbumsContext } from "./useRecentAlbumsContext";
-import type { Album } from "../types";
+import { RecentAlbumsProvider } from "../../context/RecentAlbumsContext";
+import { useFetch } from "../useFetch";
+import { useRecentAlbumsContext } from "../useRecentAlbumsContext";
+import type { Album } from "../../types";
 
 const STORAGE_KEY = "recent_albums";
 

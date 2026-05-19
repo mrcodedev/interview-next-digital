@@ -1,6 +1,5 @@
 import { useFetch } from "../hooks/useFetch";
-import { UserCard } from "../components/UserCard";
-import { Spinner } from "../components/Spinner";
+import { UserCard, Spinner, ErrorMessage } from "../components";
 import type { User } from "../types";
 
 export function UsersPage() {
@@ -20,11 +19,7 @@ export function UsersPage() {
 
         {loading && <Spinner />}
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
-            Error al cargar usuarios: {error}
-          </div>
-        )}
+        {error && <ErrorMessage message={`al cargar usuarios: ${error}`} />}
 
         {users && (
           <div className="flex flex-col gap-3">

@@ -12,6 +12,16 @@ dist
 dist-ssr
 *.local
 
+# Test coverage and reports (auto-generated, use npm run test:coverage:open)
+coverage/
+*.lcov
+coverage_*.txt
+full_output.txt
+report.txt
+test_output.txt
+test-report-*.txt
+coverage.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

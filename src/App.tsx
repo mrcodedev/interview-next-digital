@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { RecentAlbumsProvider } from "./context/RecentAlbumsContext";
-import { Layout } from "./components/Layout";
+import { Layout } from "./components";
 import { HomePage } from "./pages/HomePage";
 import { UsersPage } from "./pages/UsersPage";
 import { UserDetailPage } from "./pages/UserDetailPage";

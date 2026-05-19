@@ -6,10 +6,22 @@ on:
   pull_request:
     branches: [main, develop]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ci:
-    name: Lint · Typecheck · Test · Build
+    name: Quality · Coverage · Build (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20, 22]
 
     steps:
       - name: Checkout
@@ -18,57 +30,63 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ matrix.node-version }}
           cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint
-        run: npm run lint
+      - name: Run quality gates
+        run: npm run ci
 
-      - name: Typecheck
-        run: npm run typecheck
+      - name: Upload coverage HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html-node-${{ matrix.node-version }}
+          path: coverage/
+          if-no-files-found: error
+          retention-days: 14
 
-      - name: Test
-        run: npm run test
-
-      - name: Build
-        run: npm run build
   docker:
     name: Docker build · Smoke test
     runs-on: ubuntu-latest
     needs: ci
+    timeout-minutes: 20
     permissions:
       contents: read
       packages: write
+    env:
+      IMAGE_NAME: social-app
+      CONTAINER_NAME: social-app-test
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Build Docker image
-        run: docker build -t social-app:${{ github.sha }} .
+        run: docker build -t $IMAGE_NAME:${{ github.sha }} .
 
       - name: Run container
         run: |
           docker run -d \
-            --name social-app-test \
+            --name $CONTAINER_NAME \
             -p 8080:80 \
-            social-app:${{ github.sha }}
+            $IMAGE_NAME:${{ github.sha }}
 
-      - name: Wait for container to be ready
-        run: sleep 5
-
-      - name: Smoke test — verify that it responds
+      - name: Smoke test — wait until app responds
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080)
-          echo "HTTP status: $STATUS"
-          if [ "$STATUS" != "200" ]; then
-            echo "❌ The container does not respond with 200"
-            exit 1
-          fi
-          echo "✅ The container responds correctly"
+          for i in {1..15}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080 || true)
+            echo "Attempt $i/15 - HTTP status: $STATUS"
+            if [ "$STATUS" = "200" ]; then
+              echo "✅ The container responds correctly"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "❌ The container did not become ready in time"
+          exit 1
 
       - name: Verify that HTML is returned
         run: |
@@ -77,14 +95,22 @@ jobs:
             echo "✅ The HTML is correct"
           else
             echo "❌ The HTML does not contain the expected root div"
+            echo "$BODY" | head -c 400
             exit 1
           fi
 
-      - name: Cleanup
-        if: always()
-        run: |
-          docker stop social-app-test || true
-          docker rm social-app-test || true
+      - name: Capture Docker logs on failure
+        if: failure()
+        run: docker logs $CONTAINER_NAME > docker-smoke.log 2>&1 || true
+
+      - name: Upload Docker logs artifact on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-smoke-logs
+          path: docker-smoke.log
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Log in to GitHub Container Registry
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -97,7 +123,13 @@ jobs:
       - name: Push image to GHCR
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
-          docker tag social-app:${{ github.sha }} ghcr.io/${{ github.repository }}:latest
-          docker tag social-app:${{ github.sha }} ghcr.io/${{ github.repository }}:${{ github.sha }}
+          docker tag $IMAGE_NAME:${{ github.sha }} ghcr.io/${{ github.repository }}:latest
+          docker tag $IMAGE_NAME:${{ github.sha }} ghcr.io/${{ github.repository }}:${{ github.sha }}
           docker push ghcr.io/${{ github.repository }}:latest
           docker push ghcr.io/${{ github.repository }}:${{ github.sha }}
+
+      - name: Cleanup Docker resources
+        if: always()
+        run: |
+          docker rm -f $CONTAINER_NAME || true
+          docker image rm $IMAGE_NAME:${{ github.sha }} || true

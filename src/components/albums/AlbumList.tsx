@@ -1,9 +1,8 @@
-import { useFetch } from "../hooks/useFetch";
-import { useRecentAlbumsContext } from "../hooks/useRecentAlbumsContext";
-import { Spinner } from "./Spinner";
-import { ErrorMessage } from "./ErrorMessage";
+import { useFetch } from "../../hooks/useFetch";
+import { useRecentAlbumsContext } from "../../hooks/useRecentAlbumsContext";
+import { Spinner, ErrorMessage } from "../feedback";
 import { AlbumCard } from "./AlbumCard";
-import type { Album } from "../types";
+import type { Album } from "../../types";
 
 interface AlbumListProps {
   userId: number;
