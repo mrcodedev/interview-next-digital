@@ -98,20 +98,21 @@ npm run dev          # http://localhost:5173
 
 ### Testing
 
-| Command                      | Description                              |
-| ---------------------------- | ---------------------------------------- |
-| `npm run test`               | Run all Vitest tests once                |
-| `npm run test:unit`          | Unit tests only                          |
-| `npm run test:integration`   | Integration tests only                   |
-| `npm run test:watch`         | Vitest in watch mode                     |
-| `npm run test:ui`            | Vitest UI (browser dashboard)            |
-| `npm run test:coverage`      | Full coverage report (thresholds: 80%)   |
-| `npm run test:coverage:open` | Coverage report + open in browser        |
-| `npm run test:report`        | Save timestamped coverage report to file |
-| `npm run test:e2e`           | Playwright E2E tests (headless Chromium) |
-| `npm run test:e2e:headed`    | E2E tests in headed mode                 |
-| `npm run test:e2e:ui`        | Playwright interactive UI                |
-| `npm run test:e2e:report`    | Open the last Playwright HTML report     |
+| Command                      | Description                               |
+| ---------------------------- | ----------------------------------------- |
+| `npm run test`               | Run all Vitest tests once                 |
+| `npm run test:unit`          | Unit tests only                           |
+| `npm run test:integration`   | Integration tests only                    |
+| `npm run test:watch`         | Vitest in watch mode                      |
+| `npm run test:ui`            | Vitest UI (browser dashboard)             |
+| `npm run test:coverage`      | Full coverage report (thresholds: 80%)    |
+| `npm run test:coverage:open` | Coverage report + open in browser         |
+| `npm run test:report`        | Save timestamped coverage report to file  |
+| `npm run release`            | Interactive semver bump + changelog entry |
+| `npm run test:e2e`           | Playwright E2E tests (headless Chromium)  |
+| `npm run test:e2e:headed`    | E2E tests in headed mode                  |
+| `npm run test:e2e:ui`        | Playwright interactive UI                 |
+| `npm run test:e2e:report`    | Open the last Playwright HTML report      |
 
 ### Test structure
 
@@ -218,3 +219,31 @@ Local hooks:
 - `pre-commit` runs lint-staged
 - `pre-push` runs full quality checks (`npm run check`)
 - `commit-msg` validates message format with commitlint
+
+## Versioning and changelog
+
+This project follows semantic versioning (`major.minor.patch`) with an interactive release helper.
+
+Run:
+
+```bash
+npm run release
+```
+
+The script asks for:
+
+- release type (`major`, `minor`, `patch`)
+- short release description
+- optional git tag creation
+
+Then it updates:
+
+- `package.json` version
+- `CHANGELOG.md` with a new top entry (`version`, `date`, `type`, `description`)
+
+Recommended release commit:
+
+```bash
+git add package.json CHANGELOG.md
+git commit -m "chore(release): vx.y.z"
+```
