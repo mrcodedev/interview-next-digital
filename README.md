@@ -183,3 +183,38 @@ This project follows **Git Flow**:
 - `feature/<name>` — individual feature branches off `develop`
 - `fix/<name>` — bug-fix branches
 - `release/<version>` — release preparation branches
+
+## Commit convention
+
+This repository enforces **Conventional Commits** through Husky + commitlint.
+
+Commit format:
+
+```text
+type(scope): short summary in imperative mood
+```
+
+Common types:
+
+- `feat` — new feature
+- `fix` — bug fix
+- `refactor` — code change without behavior change
+- `test` — add/update tests
+- `chore` — tooling, dependencies or maintenance
+- `docs` — documentation only
+- `ci` — CI/CD pipeline changes
+
+Examples:
+
+```text
+feat(users): add profile tabs in user detail page
+fix(todos): prevent numeric characters in new todo titles
+refactor(docker): harden nginx and add healthcheck
+ci(security): add trivy critical enforcement scans
+```
+
+Local hooks:
+
+- `pre-commit` runs lint-staged
+- `pre-push` runs full quality checks (`npm run check`)
+- `commit-msg` validates message format with commitlint
