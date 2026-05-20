@@ -7,6 +7,7 @@
     "node": ">=20"
   },
   "scripts": {
+    "prepare": "husky",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
@@ -28,9 +29,17 @@
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "typecheck": "tsc --noEmit",
+    "commitlint": "commitlint --edit",
     "check": "npm run typecheck && npm run lint && npm run test:unit && npm run test:integration",
     "check:strict": "npm run check && npm run format:check && npm run test:coverage",
     "ci": "npm run check:strict && npm run build"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css,yml,yaml}": "prettier --write"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -39,6 +48,8 @@
     "react-router-dom": "^7.15.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.0.1",
+    "@commitlint/config-conventional": "^21.0.1",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.60.0",
     "@tailwindcss/vite": "^4.3.0",
@@ -54,7 +65,9 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+    "husky": "^9.1.7",
     "jsdom": "^29.1.1",
+    "lint-staged": "^17.0.5",
     "prettier": "^3.3.3",
     "tailwindcss": "^4.3.0",
     "typescript": "~6.0.2",

@@ -63,3 +63,6 @@ $RECYCLE.BIN/
 *.njsproj
 *.sln
 *.sw?
+
+# Husky internals
+.husky/_
