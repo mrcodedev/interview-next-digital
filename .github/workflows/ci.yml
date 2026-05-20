@@ -63,7 +63,7 @@ jobs:
         run: npm run build
 
       - name: Upload coverage HTML report
-        if: always() && matrix.node-version == 20
+        if: success() && matrix.node-version == 20
         uses: actions/upload-artifact@v4
         with:
           name: coverage-html-node-${{ matrix.node-version }}
